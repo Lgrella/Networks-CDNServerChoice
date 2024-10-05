@@ -27,8 +27,6 @@ DNS-based CDNs use the geolocation of a client’s DNS resolver’s IP address t
 The system will be evaluated based on:
 
 - **Accuracy**: How well the selected CDN server performs compared to the DNS-based selection.
-- **Efficiency**: The time taken to discover and evaluate CDN servers.
-- **Reliability**: The consistency of the selected CDN server's performance over multiple tests.
 
 ## Usage
 

@@ -24,6 +24,7 @@ def ping_websites(websites):
 
 # Example usage
 if __name__ == "__main__":
-    websites = get_top_websites(10)  # Get top 10 websites for testing
+    websites = get_top_websites(10000)  # Get top 1000 websites
     cdnservs = ping_websites(websites)
+    cdnservs.to_csv('top10000.csv', index=False)
     #print(cdnservs.head())

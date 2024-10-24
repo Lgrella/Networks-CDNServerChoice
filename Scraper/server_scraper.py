@@ -48,8 +48,9 @@ def ping_websites_and_write(websites, output_file):
 
         df = pd.DataFrame([row])
         df.to_csv(output_file, mode='a', header=False, index=False)
+        # print("saved")
 
 if __name__ == "__main__":
-    output_file = 'banglore_top10000.csv'
+    output_file = 'singapore_top10000.csv'
     websites = get_top_websites(10000)
     ping_websites_and_write(websites, output_file)

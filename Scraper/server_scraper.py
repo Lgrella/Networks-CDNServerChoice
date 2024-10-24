@@ -1,7 +1,13 @@
 import requests
 import socket
 import pandas as pd
-from tranco import Tranco
+import os
+import subprocess
+#from tranco import Tranco
+
+#DC_Location = os.getenv('DC_Location')
+
+DC_Location = 'test_auto'  # Example value for testing
 
 def get_top_websites(limit=15000):
     t = Tranco(cache=True, cache_dir='.tranco')
@@ -21,10 +27,28 @@ def ping_websites(websites):
     df = pd.DataFrame(data)
     return df
 
+def push_new_document(document_name):
+    try:
+        # Navigate to your repository directory
+        subprocess.run(["git", "-C", "/Networks-CDNServerChoice/Scraper", "pull"], check=True)
+        # Stage the new document
+        subprocess.run(["git", "-C", "/Networks-CDNServerChoice/Scraper", "add", document_name], check=True)
+        # Commit the changes
+        subprocess.run(["git", "-C", "/Networks-CDNServerChoice/Scraper", "commit", "-m", "ScraperFinished"], check=True)
+        # Push to the repository
+        subprocess.run(["git", "-C", "/Networks-CDNServerChoice/Scraper", "push", "origin", "main"], check=True)
+        print("New document pushed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred: {e}")
+
 
 # Example usage
 if __name__ == "__main__":
-    websites = get_top_websites(10000)  # Get top 1000 websites
+    #websites = get_top_websites(10000)  # Get top 1000 websites
+    websites_df = pd.read_csv('final_websites.csv').head(50)  # Read the CSV file
+    websites = websites_df['Website'].tolist()
     cdnservs = ping_websites(websites)
-    cdnservs.to_csv('top10000.csv', index=False)
+    name_of_file = f'cdnservs_{DC_Location}.csv'
+    cdnservs.to_csv(name_of_file, index=False)
+    push_new_document(name_of_file)
     #print(cdnservs.head())

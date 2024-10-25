@@ -30,13 +30,13 @@ def ping_websites(websites):
 def push_new_document(document_name):
     try:
         # Navigate to your repository directory
-        subprocess.run(["git", "-C", "~/Networks-CDNServerChoice/Scraper", "pull"], check=True)
+        subprocess.run(["git", "pull"], check=True)
         # Stage the new document
-        subprocess.run(["git", "-C", "~/Networks-CDNServerChoice/Scraper", "add", document_name], check=True)
+        subprocess.run(["git", "add", document_name], check=True)
         # Commit the changes
-        subprocess.run(["git", "-C", "~/Networks-CDNServerChoice/Scraper", "commit", "-m", "ScraperFinished"], check=True)
+        subprocess.run(["git", "commit", "-m", "ScraperFinished"], check=True)
         # Push to the repository
-        subprocess.run(["git", "-C", "~/Networks-CDNServerChoice/Scraper", "push", "origin", "main"], check=True)
+        subprocess.run(["git", "push", "origin", "main"], check=True)
         print("New document pushed successfully.")
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")

@@ -35,7 +35,7 @@ max_cdn_count = 0
 for website in websites:
     cdn_servers = list(cdn_servers_dict[website])
     # Process the website only if the number of cdn_servers is greater than 8
-    if len(cdn_servers) > 8:
+    if len(cdn_servers) > 6:
         expanded_data['Website'].append(website)
         max_cdn_count = max(max_cdn_count, len(cdn_servers))
         # Add CDN servers to respective columns

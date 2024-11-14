@@ -3,6 +3,8 @@ import pandas as pd
 import whois
 import re
 import csv
+import subprocess
+
 
 # List of CDN providers based on the image
 cdn_providers = [
@@ -27,7 +29,7 @@ def is_cdn_server(server_name, server_ip):
     # try:
     #     whois_info = whois.whois(server_ip)
     #     organization = whois_info.org if whois_info.org else ""
-    #     # print(f"organization is {organization}")
+    #     print(f"organization is {organization}")
         
     #     # Check if the organization matches any CDN provider
     #     for provider in cdn_providers:
@@ -36,6 +38,39 @@ def is_cdn_server(server_name, server_ip):
 
     # except Exception as e:
     #     print(f"WHOIS lookup failed for {server_ip}")
+
+    # # Perform WHOIS lookup using command line
+    try:
+        # Run the whois command
+        whois_process = subprocess.Popen(
+            ["whois", server_ip],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+
+        # Read the output line by line
+        organization = None
+        for line in iter(whois_process.stdout.readline, ''):
+            # Check if we find the "Organization" line
+            match = re.search(r"organization:\s*(.*)", line.lower())
+            if match:
+                organization = match.group(1).strip()
+
+                # Check if organization matches any CDN provider
+                for provider in cdn_providers:
+                    if provider.lower() in organization:
+                        # Terminate whois process since we got what we need
+                        whois_process.terminate()
+                        return True
+        # print(f"organization is {organization}")
+        # Wait for process to complete to avoid zombie processes
+        whois_process.communicate()
+
+    except subprocess.TimeoutExpired:
+        print(f"Timeout expired while running whois for {server_ip}")
+    except Exception as e:
+        print(f"Error running whois for {server_ip}: {e}")
 
     return False
 
@@ -83,7 +118,7 @@ for i in range(max_cdn_count):
 # Fill data in the order of final_websites.csv
 for website in websites:
     cdn_servers = list(cdn_servers_dict[website])
-    if len(cdn_servers) > 6:  # Only include if there are more than 6 CDN servers
+    if len(cdn_servers) > 1:  # Only include if there are more than 6 CDN servers
         expanded_data['Website'].append(website)
         
         # Add CDN servers to respective columns
@@ -98,4 +133,4 @@ expanded_df = pd.DataFrame(expanded_data)
 expanded_df.to_csv(output_file_path, index=False)
 
 print(f"Expanded data saved to: {output_file_path}")
-# print(is_cdn_server('	media-router-aol71.canaryp.media.vip.ir2.yahoo.com', '188.125.72.137'))
+# print(is_cdn_server('108.61.12.218.reliableservers.com', '108.61.12.218'))

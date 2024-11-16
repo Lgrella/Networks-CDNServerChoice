@@ -33,7 +33,7 @@ with open(output_file, 'w', newline='') as f:
                                 break
 
                 result_row[cdn_col] = cdn_name
-                result_row[f'IP{i}'] = ip_address if ip_address else 'None'
+                result_row[f'IP{i}'] = ip_address if ip_address else ''
 
             writer.writerow(result_row)
             print(f"Processed and saved record for {cdn_server['Website']}")

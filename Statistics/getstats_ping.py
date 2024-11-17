@@ -75,6 +75,6 @@ for index, row in filtered_data.iterrows():
 
 # Save results to CSV
 output_df = pd.DataFrame(results)
-output_df.to_csv('Statistics/cdn_ping_stats.csv', index=False)
+output_df.to_csv('Statistics/cdn_ping_stats_test.csv', index=False)
 
-print("Ping statistics saved to cdn_ping_stats.csv")
+print("Ping statistics saved to cdn_ping_stats_test.csv")

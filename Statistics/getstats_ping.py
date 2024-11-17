@@ -10,7 +10,12 @@ data = pd.read_csv('Scraper/final_websites_cdnservs_ip.csv')
 #restrict to 5 records and keep only columns that start with ip and the website column;
 
 filtered_data = data.loc[:, data.columns.str.contains("Website|IP")]
-filtered_data = filtered_data.head(1)
+
+filtered_data = filtered_data.head(250)
+#filtered_data = filtered_data[250:500]
+#filtered_data = filtered_data[500:750]
+#filtered_data = filtered_data[750:]
+
 # Function to ping a host and return latency stats
 def ping_host(host, count=10):
     #print(f"Pinging {host}...")

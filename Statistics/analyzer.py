@@ -8,35 +8,30 @@ directory = os.getcwd()
 
 # Group files by `ny` prefix
 grouped_files = {
-    "ny1": glob.glob(f"{directory}/cdn_ping_stats_ny1_*.csv"),
-    "ny2": glob.glob(f"{directory}/cdn_ping_stats_ny2_*.csv"),
-    "ny3": glob.glob(f"{directory}/cdn_ping_stats_ny3_*.csv"),
+    "sgp": glob.glob(f"{directory}/cdn_ping_stats_sgp_*.csv")
 }
 
-results = {}
+#read in csv
+df = pd.read_csv(f"{directory}/cdn_ping_stats_sgp1.csv")
 
-for ny, file_list in grouped_files.items():
-    all_data = []  # To store data across all CSVs for this group
-    
-    for file in file_list:
-        df = pd.read_csv(file)
-        all_data.append(df[['min', 'max', 'mean', 'median']])  # Select relevant columns
-    
-    combined_df = pd.concat(all_data, ignore_index=True)
-    global_min = combined_df['min'].min()
-    global_max = combined_df['max'].max()
-    global_mean = combined_df['mean'].mean()
-    global_median = np.median(combined_df['median'])
-    
-    results[ny] = {
-        "global_min": global_min,
-        "global_max": global_max,
-        "global_mean": global_mean,
-        "global_median": global_median,
-    }
+first_records = df.groupby("website").first().reset_index()
+df_without_first = df.loc[df.index != df.groupby("website").head(1).index[0]]
+min_median_rows = df_without_first.loc[df_without_first.groupby("website")["median"].idxmin()]  
 
-for ny, stats in results.items():
-    print(f"Global stats for {ny}:")
-    for key, value in stats.items():
-        print(f"  {key}: {value}")
+merged_dataset = pd.merge(
+    first_records, 
+    min_median_rows[["website", "cdn", "median"]], 
+    on="website", 
+    suffixes=("_first", "_min_median")
+)
+
+merged_dataset["diff"] = merged_dataset["median_first"] - merged_dataset["median_min_median"]
+
+#create a flag if cdn_min_median is the same as cdn_first
+merged_dataset["CDNChoiceGood"] = merged_dataset["cdn_first"] == merged_dataset["cdn_min_median"]
+
+print(merged_dataset)
+
+#write to csv
+merged_dataset.to_csv(f"{directory}/sgp1_compare.csv", index=False)
 

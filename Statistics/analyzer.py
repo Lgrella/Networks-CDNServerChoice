@@ -2,6 +2,7 @@ import pandas as pd
 import glob
 import os
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Use the current directory
 directory = os.getcwd()
@@ -20,7 +21,8 @@ for pattern in file_patterns:
     combined_dataframes[pattern.split('_')[3].split('*')[0]] = combined_df
 
 # Example: Access combined DataFrame for 'ams' files
-# ams_combined = combined_dataframes["ams"]
+#ams_combined = combined_dataframes["ams"]
+
 # blr_combined = combined_dataframes["blr"]
 # fra_combined = combined_dataframes["fra"]
 
@@ -54,10 +56,16 @@ for key, value in combined_dataframes.items():
     #create a flag if cdn_min_median is the same as cdn_first
     merged_dataset["CDNChoiceGood"] = merged_dataset["cdn_first"] == merged_dataset["cdn_min_median"]
 
-    #print(merged_dataset)
+    # Filter for bad choices
+    bad_choices = merged_dataset[merged_dataset['CDNChoiceGood'] == False]
 
-    #write to csv
-    #merged_dataset.to_csv(f"{directory}/Combined/{key}_compare.csv", index=False)
+    # Histogram of 'diff' values
+    plt.hist(bad_choices['diff'], bins=40, color='blue', alpha=0.7)
+    plt.title("Distribution of how much time is given up by choosing the wrong CDN\n" + key)
+    plt.xlabel("Time (ms)")
+    plt.ylabel("Frequency")
+    plt.savefig(f"{directory}/Combined/viz/{key}_histogram.png")
+    plt.close()
 
     #get summary statistics of CDNChoiceGood for each file and diff where CDNChoiceGood is False:
     #create a table with the summary statistics for excel with each row being a different file

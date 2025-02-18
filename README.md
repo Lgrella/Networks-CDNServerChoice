@@ -28,21 +28,6 @@ The system will be evaluated based on:
 
 - **Accuracy**: How well the selected CDN server performs compared to the DNS-based selection.
 
-## Usage
-
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/yourusername/Networks-CDNServerChoice.git
-    ```
-2. Navigate to the project directory:
-    ```sh
-    cd Networks-CDNServerChoice
-    ```
-3. Run XXX:
-    ```sh
-    python XXX.py
-    ```
-
 ## Conclusion
 
 This project aims to provide a more accurate and reliable method for clients to select the best CDN server by bypassing the traditional DNS-based approach. By directly measuring latency, clients can make more informed decisions, leading to improved performance and user experience.
